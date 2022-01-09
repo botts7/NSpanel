@@ -10,7 +10,7 @@ esphome:
     then:
       - wait_until: 
           api.connected:
-      - delay: 5s
+      - delay: 10s
       - lambda: |- 
           if (id(light_1_binary).state) {
             id(disp1).set_component_value("Lights.bt1",1);
@@ -53,6 +53,10 @@ esphome:
             id(disp1).set_component_value("Lights.bt6",0);
           }
       - component.update: disp1      
+      - lambda: id(disp1).set_component_text_printf("Home.time", "%02i:%02i", id(homeassistant_time).now().hour, id(homeassistant_time).now().minute);
+      - lambda: id(disp1).set_component_text_printf("Home.date", "%i-%02i-%02i", id(homeassistant_time).now().year, id(homeassistant_time).now().month, id(homeassistant_time).now().day_of_month);
+      - lambda: id(disp1).set_component_text_printf("Home.temp", "%.1f", id(current_temperature).state);
+      - lambda: id(disp1).set_component_text_printf("Home.tempfl", "%.1f", id(temp_feelslike).state);      
 esp32:
   board: esp32dev
 
@@ -180,28 +184,30 @@ binary_sensor:
     
   - platform: nextion
     name: $device_name Light 1
+    id: light_1_button    
     page_id: 2
     component_id: 1  
     on_press:
       then:
         if:
           condition:
-            lambda: 'return id(light_3_binary).state;'
+            lambda: 'return id(light_1_binary).state;'
           then:
             - homeassistant.service:
-                service: light.turn_on
+                service: light.turn_off
                 data:
                   entity_id: light.kitchen_lights
             - component.update: disp1
           else:
             - homeassistant.service:
-                service: light.toggle
+                service: light.turn_on
                 data:
                   entity_id: light.kitchen_lights
             - component.update: disp1           
         
   - platform: nextion
     name: $device_name Light 2
+    id: light_2_button    
     page_id: 2
     component_id: 2   
     on_press:
@@ -211,19 +217,20 @@ binary_sensor:
             lambda: 'return id(light_2_binary).state;'
           then:
             - homeassistant.service:
-                service: light.turn_on
+                service: light.turn_off
                 data:
                   entity_id: light.main_room_lights
             - component.update: disp1
           else:
             - homeassistant.service:
-                service: light.toggle
+                service: light.turn_on
                 data:
                   entity_id: light.main_room_lights
             - component.update: disp1           
                
   - platform: nextion
     name: $device_name Light 3
+    id: light_3_button    
     page_id: 2
     component_id: 3
     on_press:
@@ -233,19 +240,20 @@ binary_sensor:
             lambda: 'return id(light_3_binary).state;'
           then:
             - homeassistant.service:
-                service: light.turn_on
+                service: light.turn_off
                 data:
                   entity_id: light.alfresco
             - component.update: disp1
           else:
             - homeassistant.service:
-                service: light.toggle
+                service: light.turn_on
                 data:
                   entity_id: light.alfresco
             - component.update: disp1     
             
   - platform: nextion
     name: $device_name Light 4
+    id: light_4_button
     page_id: 2
     component_id: 4
     on_press:
@@ -255,19 +263,20 @@ binary_sensor:
             lambda: 'return id(light_4_binary).state;'
           then:
             - homeassistant.service:
-                service: light.turn_on
+                service: light.turn_off
                 data:
                   entity_id: light.backyard_deck
             - component.update: disp1
           else:
             - homeassistant.service:
-                service: light.toggle
+                service: light.turn_on
                 data:
                   entity_id: light.backyard_deck
             - component.update: disp1            
         
   - platform: nextion
     name: $device_name Light 5
+    id: light_5_button    
     page_id: 2
     component_id: 5
     on_press:
@@ -277,19 +286,20 @@ binary_sensor:
             lambda: 'return id(light_5_binary).state;'
           then:
             - homeassistant.service:
-                service: light.turn_on
+                service: light.turn_off
                 data:
                   entity_id: light.porch
             - component.update: disp1
           else:
             - homeassistant.service:
-                service: light.toggle
+                service: light.turn_on
                 data:
                   entity_id: light.porch
             - component.update: disp1           
     
   - platform: nextion
     name: $device_name Light 6
+    id: light_6_button    
     page_id: 2
     component_id: 6
     on_press:
@@ -299,13 +309,13 @@ binary_sensor:
             lambda: 'return id(light_6_binary).state;'
           then:
             - homeassistant.service:
-                service: light.turn_on
+                service: light.turn_off
                 data:
                   entity_id: light.bedroom
             - component.update: disp1
           else:
             - homeassistant.service:
-                service: light.toggle
+                service: light.turn_on
                 data:
                   entity_id: light.bedroom
             - component.update: disp1          
@@ -317,9 +327,9 @@ binary_sensor:
       then:
         - lambda: |- 
             if (id(light_1_binary).state) {
-              id(disp1).set_component_value("Lights.bt1",1);
+              id(disp1).set_component_value("light_1_button",1);
             } else {
-              id(disp1).set_component_value("Lights.bt1",0);   
+              id(disp1).set_component_value("light_1_button",0);   
             }
         - component.update: disp1
         
@@ -330,9 +340,9 @@ binary_sensor:
       then:
         - lambda: |- 
             if (id(light_2_binary).state) {
-              id(disp1).set_component_value("Lights.bt2",1);
+              id(disp1).set_component_value("light_2_button",1);
             } else {
-              id(disp1).set_component_value("Lights.bt2",0);   
+              id(disp1).set_component_value("light_2_button",0);   
             }
         - component.update: disp1               
 
@@ -343,9 +353,9 @@ binary_sensor:
       then:
         - lambda: |- 
             if (id(light_3_binary).state) {
-              id(disp1).set_component_value("Lights.bt3",1);
+              id(disp1).set_component_value("light_3_button",1);
             } else {
-              id(disp1).set_component_value("Lights.bt3",0);   
+              id(disp1).set_component_value("light_3_button",0);   
             }
         - component.update: disp1 
         
@@ -356,9 +366,9 @@ binary_sensor:
       then:
         - lambda: |- 
             if (id(light_4_binary).state) {
-              id(disp1).set_component_value("Lights.bt4",1);
+              id(disp1).set_component_value("light_4_button",1);
             } else {
-              id(disp1).set_component_value("Lights.bt4",0);   
+              id(disp1).set_component_value("light_4_button",0);   
             }
         - component.update: disp1        
         
@@ -369,9 +379,9 @@ binary_sensor:
       then:
         - lambda: |- 
             if (id(light_5_binary).state) {
-              id(disp1).set_component_value("Lights.bt5",1);
+              id(disp1).set_component_value("light_5_button",1);
             } else {
-              id(disp1).set_component_value("Lights.bt5",0);   
+              id(disp1).set_component_value("light_5_button",0);   
             }
         - component.update: disp1        
         
@@ -382,9 +392,9 @@ binary_sensor:
       then:
         - lambda: |- 
             if (id(light_6_binary).state) {
-              id(disp1).set_component_value("Lights.bt6",1);
+              id(disp1).set_component_value("light_6_button",1);
             } else {
-              id(disp1).set_component_value("Lights.bt6",0);   
+              id(disp1).set_component_value("light_6_button",0);   
             }
         - component.update: disp1                
 
