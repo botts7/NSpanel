@@ -59,7 +59,7 @@ esp32:
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password  
-  use_address: xxx.xxx.xxx.xxx 
+  use_address: 192.168.86.62  
 
 
 time:
@@ -182,86 +182,133 @@ binary_sensor:
     name: $device_name Light 1
     page_id: 2
     component_id: 1  
-    on_state:
+    on_press:
       then:
-        - lambda: |- 
-            if (id(light_1_binary).state) {
-              id(disp1).set_component_value("Lights.bt1",1);
-            } else {
-              id(disp1).set_component_value("Lights.bt1",0);    
-            }
-        - component.update: disp1              
-    
+        if:
+          condition:
+            lambda: 'return id(light_3_binary).state;'
+          then:
+            - homeassistant.service:
+                service: light.turn_on
+                data:
+                  entity_id: light.kitchen_lights
+            - component.update: disp1
+          else:
+            - homeassistant.service:
+                service: light.toggle
+                data:
+                  entity_id: light.kitchen_lights
+            - component.update: disp1           
+        
   - platform: nextion
     name: $device_name Light 2
     page_id: 2
     component_id: 2   
-    on_state:
+    on_press:
       then:
-        - lambda: |- 
-            if (id(light_2_binary).state) {
-              id(disp1).set_component_value("Lights.bt2",1);
-            } else {
-              id(disp1).set_component_value("Lights.bt2",0);   
-            }
-        - component.update: disp1                 
-
+        if:
+          condition:
+            lambda: 'return id(light_2_binary).state;'
+          then:
+            - homeassistant.service:
+                service: light.turn_on
+                data:
+                  entity_id: light.main_room_lights
+            - component.update: disp1
+          else:
+            - homeassistant.service:
+                service: light.toggle
+                data:
+                  entity_id: light.main_room_lights
+            - component.update: disp1           
+               
   - platform: nextion
     name: $device_name Light 3
     page_id: 2
     component_id: 3
-    on_state:
+    on_press:
       then:
-        - lambda: |- 
-            if (id(light_3_binary).state) {
-              id(disp1).set_component_value("Lights.bt3",1);
-            } else {
-              id(disp1).set_component_value("Lights.bt3",0);      
-            }
-        - component.update: disp1                 
-    
+        if:
+          condition:
+            lambda: 'return id(light_3_binary).state;'
+          then:
+            - homeassistant.service:
+                service: light.turn_on
+                data:
+                  entity_id: light.alfresco
+            - component.update: disp1
+          else:
+            - homeassistant.service:
+                service: light.toggle
+                data:
+                  entity_id: light.alfresco
+            - component.update: disp1     
+            
   - platform: nextion
     name: $device_name Light 4
     page_id: 2
     component_id: 4
-    on_state:
+    on_press:
       then:
-        - lambda: |- 
-            if (id(light_4_binary).state) {
-              id(disp1).set_component_value("Lights.bt4",1);
-            } else {
-              id(disp1).set_component_value("Lights.bt4",0);   
-            }
-        - component.update: disp1                 
-    
-    
+        if:
+          condition:
+            lambda: 'return id(light_4_binary).state;'
+          then:
+            - homeassistant.service:
+                service: light.turn_on
+                data:
+                  entity_id: light.backyard_deck
+            - component.update: disp1
+          else:
+            - homeassistant.service:
+                service: light.toggle
+                data:
+                  entity_id: light.backyard_deck
+            - component.update: disp1            
+        
   - platform: nextion
     name: $device_name Light 5
     page_id: 2
     component_id: 5
-    on_state:
+    on_press:
       then:
-        - lambda: |- 
-            if (id(light_5_binary).state) {
-              id(disp1).set_component_value("Lights.bt5",1);
-            } else {
-              id(disp1).set_component_value("Lights.bt5",0);   
-            }
-        - component.update: disp1                 
+        if:
+          condition:
+            lambda: 'return id(light_5_binary).state;'
+          then:
+            - homeassistant.service:
+                service: light.turn_on
+                data:
+                  entity_id: light.porch
+            - component.update: disp1
+          else:
+            - homeassistant.service:
+                service: light.toggle
+                data:
+                  entity_id: light.porch
+            - component.update: disp1           
     
   - platform: nextion
     name: $device_name Light 6
     page_id: 2
     component_id: 6
-    on_state:
+    on_press:
       then:
-        - lambda: |- 
-            if (id(light_6_binary).state) {
-              id(disp1).set_component_value("Lights.bt6",1);
-            } else {
-              id(disp1).set_component_value("Lights.bt6",0);        
-            }
-        - component.update: disp1                 
+        if:
+          condition:
+            lambda: 'return id(light_6_binary).state;'
+          then:
+            - homeassistant.service:
+                service: light.turn_on
+                data:
+                  entity_id: light.bedroom
+            - component.update: disp1
+          else:
+            - homeassistant.service:
+                service: light.toggle
+                data:
+                  entity_id: light.bedroom
+            - component.update: disp1          
 
   - platform: homeassistant
     id: light_1_binary
@@ -274,7 +321,7 @@ binary_sensor:
             } else {
               id(disp1).set_component_value("Lights.bt1",0);   
             }
-        - component.update: disp1   
+        - component.update: disp1
         
   - platform: homeassistant
     id: light_2_binary
@@ -287,7 +334,7 @@ binary_sensor:
             } else {
               id(disp1).set_component_value("Lights.bt2",0);   
             }
-        - component.update: disp1           
+        - component.update: disp1               
 
   - platform: homeassistant
     id: light_3_binary
@@ -300,7 +347,7 @@ binary_sensor:
             } else {
               id(disp1).set_component_value("Lights.bt3",0);   
             }
-        - component.update: disp1  
+        - component.update: disp1 
         
   - platform: homeassistant
     id: light_4_binary
@@ -313,7 +360,7 @@ binary_sensor:
             } else {
               id(disp1).set_component_value("Lights.bt4",0);   
             }
-        - component.update: disp1         
+        - component.update: disp1        
         
   - platform: homeassistant
     id: light_5_binary
@@ -339,7 +386,7 @@ binary_sensor:
             } else {
               id(disp1).set_component_value("Lights.bt6",0);   
             }
-        - component.update: disp1              
+        - component.update: disp1                
 
 output:
   - platform: ledc
@@ -598,7 +645,7 @@ display:
   - platform: nextion
     id: disp1
     uart_id: tf_uart
-    tft_url: http://xxx.xxx.xxx.xxx:8123/local/hmi.tft  
+    tft_url: http://192.168.86.68:8123/local/hmi.tft  
 
     # A little fun...
     on_setup:
